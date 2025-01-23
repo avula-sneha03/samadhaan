@@ -2,7 +2,7 @@ import { Navigate } from "react-router-dom";
 import Navbar from "../Navbar";
 
 const Home =()=>{
-    console.log(localStorage.getItem('jwt'));
+   // console.log(localStorage.getItem('jwt'));
     return(
         <>
         <Navbar/>

@@ -1,4 +1,4 @@
-import axios from '../Config/axiosconfig';
+import axios from '../Config/axiosConfig';
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 
@@ -40,7 +40,6 @@ const LoginSignup = () => {
             }
             try{
                 let response =await axios.post("/login",user);
-                console.log(response.data);
                 localStorage.setItem('jwt',response.data);
                 console.log(localStorage.getItem('jwt'))
                 navigate("/");

@@ -46,9 +46,12 @@ public class UserController {
     }
 
     @GetMapping("/myquestions")
-    public ResponseEntity<?> getMethodName(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getmyquestions(@RequestHeader("Authorization") String token) {
         return service.myquestions(token.substring(7));
     }
+   
+
+    
     
     
     

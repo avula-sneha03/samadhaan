@@ -35,6 +35,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityfilterchain(HttpSecurity http) throws Exception
     {
         //disable csrf
+        http.cors();
         http.csrf(a -> a.disable());
         //tell that now we need to authorize all request
         http.authorizeHttpRequests(a -> a.requestMatchers("/register","/login").permitAll().anyRequest().authenticated());

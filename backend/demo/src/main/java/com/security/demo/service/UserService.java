@@ -53,7 +53,7 @@ public class UserService {
 
     public ResponseEntity<?> addquestion(Question q, String token) {
         // Extract username from the token
-        String username = jwtService.extractUsername(token);
+        String username = jwtService.extractUserName(token);
         
         // Find the user by username
         User user = repo.findByUsername(username);
@@ -79,7 +79,7 @@ public class UserService {
     }
 
     public ResponseEntity<?> myquestions(String substring) {
-        String username=jwtService.extractUsername(substring);
+        String username=jwtService.extractUserName(substring);
         User user= repo.findByUsername(username);
         if (user == null) {
             // Log this situation for debugging purposes
@@ -88,5 +88,7 @@ public class UserService {
         }
         return new ResponseEntity<>(user.getQuestions(),HttpStatus.OK);
     }
+
+    
     
 }

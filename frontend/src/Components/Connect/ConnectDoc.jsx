@@ -1,6 +1,8 @@
+import axios from "../../Config/axiosConfig"
 import Navbar from "../Navbar"
 
 const ConnectDoc =()=>{
+    
 return(
     <>
     <Navbar/>

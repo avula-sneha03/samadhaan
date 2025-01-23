@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Home from '../Components/Home/Home';
 import LoginSignup from '../Components/LoginSignup';
 import ProtectedRoute from './ProtectedRoute'; // Import the ProtectedRoute component
@@ -22,6 +22,9 @@ const AppRouter = () => {
           <Route path="/connectdoc" element={<ConnectDoc />} />
           <Route path="/discussions" element={<Discussions />} />
         </Route>
+
+        {/* Fallback route for undefined paths */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   );
