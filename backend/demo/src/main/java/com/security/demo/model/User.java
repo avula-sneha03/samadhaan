@@ -25,4 +25,9 @@ public class User {
     @JoinColumn(name="fk_userid",referencedColumnName = "id")
     private List<Question> questions;
 
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="fk_userid",referencedColumnName = "id")
+    private List<Answer> answers; 
+
 }

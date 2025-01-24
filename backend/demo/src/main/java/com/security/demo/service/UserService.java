@@ -11,8 +11,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
+import com.security.demo.Repo.QuestionRepo;
 import com.security.demo.Repo.UserRepo;
+import com.security.demo.model.Answer;
 import com.security.demo.model.Question;
 import com.security.demo.model.User;
 
@@ -21,6 +26,8 @@ public class UserService {
 
     @Autowired
     private UserRepo repo;
+    @Autowired
+    private QuestionRepo qrepo;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -88,6 +95,122 @@ public class UserService {
         }
         return new ResponseEntity<>(user.getQuestions(),HttpStatus.OK);
     }
+
+    public ResponseEntity<?> addAnswer(int question_id, Answer answer, String token) {
+        // Retrieve the question by ID
+        Question q = qrepo.findById(question_id).orElse(null);
+        if (q == null) {
+            return new ResponseEntity<>("Question not found", HttpStatus.NOT_FOUND);
+        }
+    
+        // Add the answer to the question's list of answers
+        List<Answer> answers = q.getAnswers();
+        answers.add(answer);
+        qrepo.save(q);
+    
+        // Extract the username from the token
+        String username = jwtService.extractUserName(token);
+    
+        // Find the user by username
+        User user = repo.findByUsername(username);
+        if (user == null) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+    
+        // Add the answer to the user's list of answers
+        List<Answer> userAnswers = user.getAnswers();
+        userAnswers.add(answer);
+        repo.save(user); // Save the updated user entity
+    
+        // Return a success response
+        return new ResponseEntity<>("Answer added successfully", HttpStatus.OK);
+    }
+
+
+
+
+    public ResponseEntity<?> updateAnswer(int questionId, Answer updatedAnswer, String token) {
+        // Find the question
+        Question question = qrepo.findById(questionId).orElse(null);
+        if (question == null) {
+            return new ResponseEntity<>("Question not found", HttpStatus.NOT_FOUND);
+        }
+    
+        // Extract username from token
+        String username = jwtService.extractUserName(token);
+        User user = repo.findByUsername(username);
+    
+        if (user == null) {
+            return new ResponseEntity<>("User not found", HttpStatus.UNAUTHORIZED);
+        }
+    
+        // Check if the answer exists in the question's answer list
+        boolean isUpdated = false;
+        for (Answer answer : question.getAnswers()) {
+            if (answer.getId() == updatedAnswer.getId()) {
+                answer.setContent(updatedAnswer.getContent());
+                isUpdated = true;
+                break;
+            }
+        }
+    
+        // Check if the answer exists in the user's answer list
+        for (Answer answer : user.getAnswers()) {
+            if (answer.getId() == updatedAnswer.getId()) {
+                answer.setContent(updatedAnswer.getContent());
+                break;
+            }
+        }
+    
+        if (!isUpdated) {
+            return new ResponseEntity<>("Answer not found in the question", HttpStatus.NOT_FOUND);
+        }
+    
+        // Save changes to the database
+        qrepo.save(question);
+        repo.save(user);
+    
+        return new ResponseEntity<>("Answer updated", HttpStatus.OK);
+    }
+
+
+
+
+    public ResponseEntity<?> deleteAnswer(int questionId, Answer answerToDelete, String token) {
+       
+        Question question = qrepo.findById(questionId).orElse(null);
+        if (question == null) {
+            return new ResponseEntity<>("Question not found", HttpStatus.NOT_FOUND);
+        }
+    
+        // Extract username from token
+        String username = jwtService.extractUserName(token);
+        User user = repo.findByUsername(username);
+    
+        if (user == null) {
+            return new ResponseEntity<>("User  not found", HttpStatus.UNAUTHORIZED);
+        }
+    
+        // Check if the answer exists in the question's answer list
+        boolean isDeleted = question.getAnswers().removeIf(answer -> answer.getId() == answerToDelete.getId());
+    
+        // Optionally, check if the answer exists in the user's answer list
+        // This part is optional based on your requirements
+        user.getAnswers().removeIf(answer -> answer.getId() == answerToDelete.getId());
+    
+        if (!isDeleted) {
+            return new ResponseEntity<>("Answer not found in the question", HttpStatus.NOT_FOUND);
+        }
+    
+        // Save changes to the database
+        qrepo.save(question);
+        repo.save(user); // Save user if you modified the user's answer list
+    
+        return new ResponseEntity<>("Answer deleted", HttpStatus.OK);
+}
+    
+    
+    
 
     
     
