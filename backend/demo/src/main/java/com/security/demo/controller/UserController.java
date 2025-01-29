@@ -50,6 +50,12 @@ public class UserController {
         
     }
 
+    @PostMapping("/updatequestion/{question_id}")
+    public ResponseEntity<?> updatequestion(@RequestBody Question x ,@RequestHeader("Authorization") String token,@PathVariable("question_id")int question_id) {
+        return service.updateQuestion(question_id,x,token.substring(7));   
+    }
+    
+
     @GetMapping("/myquestions")
     public ResponseEntity<?> getmyquestions(@RequestHeader("Authorization") String token) {
         return service.myquestions(token.substring(7));

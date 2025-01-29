@@ -208,6 +208,41 @@ public class UserService {
     
         return new ResponseEntity<>("Answer deleted", HttpStatus.OK);
 }
+
+public ResponseEntity<?> updateQuestion(int question_id, Question x, String token) {
+    // Find the question by ID
+    Question q = qrepo.findById(question_id).orElse(null);
+    
+    if (q == null) {
+        return new ResponseEntity<>("Question does not exist", HttpStatus.NOT_FOUND);
+    }
+    
+    // Extract username from the token
+    String username = jwtService.extractUserName(token);
+    
+    // Find the user by username
+    User user = repo.findByUsername(username);
+    
+    if (user == null) {
+        return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+    }
+
+    // Ensure the question belongs to the user
+    if (!user.getQuestions().contains(q)) {
+        return new ResponseEntity<>("You are not authorized to update this question", HttpStatus.UNAUTHORIZED);
+    }
+    
+    // Update question content
+    q.setContent(x.getContent());
+
+    // Save the updated question
+    qrepo.save(q);
+
+    repo.save(user);
+    
+    return new ResponseEntity<>("Question updated successfully", HttpStatus.OK);
+}
+
     
     
     

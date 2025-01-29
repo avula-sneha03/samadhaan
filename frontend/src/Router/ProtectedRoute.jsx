@@ -15,8 +15,10 @@ const ProtectedRoute = () => {
 
             try {
                 await axiosInstance.get("/home"); // Make the request to validate the token
+            
                 setIsAuthenticated(true); // Token is valid
             } catch (error) {
+                console.log(error)
                 setIsAuthenticated(false); // Token is invalid or request failed
             }
         };
