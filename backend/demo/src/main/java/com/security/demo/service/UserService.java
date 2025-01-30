@@ -243,6 +243,34 @@ public ResponseEntity<?> updateQuestion(int question_id, Question x, String toke
     return new ResponseEntity<>("Question updated successfully", HttpStatus.OK);
 }
 
+public ResponseEntity<?> deleteQuestion(int question_id, String token) {
+    // Find the question by ID
+    Question question = qrepo.findById(question_id).orElse(null);
+    if (question == null) {
+        return new ResponseEntity<>("Question does not exist", HttpStatus.NOT_FOUND);
+    }
+
+    // Extract username from the token
+    String username = jwtService.extractUserName(token);
+    User user = repo.findByUsername(username);
+    if (user == null) {
+        return new ResponseEntity<>("User  not found", HttpStatus.UNAUTHORIZED);
+    }
+
+    // Check if the question belongs to the user
+    List<Question> userQuestions = user.getQuestions();
+    boolean isRemoved = userQuestions.removeIf(item -> item.getId() == question_id);
+
+    if (!isRemoved) {
+        return new ResponseEntity<>("Question does not belong to the user", HttpStatus.FORBIDDEN);
+    }
+
+    // Save the user to trigger cascading delete
+    repo.save(user);
+
+    return new ResponseEntity<>("Question deleted successfully", HttpStatus.OK);
+}
+
     
     
     

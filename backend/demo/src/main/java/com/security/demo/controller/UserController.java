@@ -54,6 +54,11 @@ public class UserController {
     public ResponseEntity<?> updatequestion(@RequestBody Question x ,@RequestHeader("Authorization") String token,@PathVariable("question_id")int question_id) {
         return service.updateQuestion(question_id,x,token.substring(7));   
     }
+    @DeleteMapping("/deletequestion/{question_id}")
+    public ResponseEntity<?> deletequestion(@RequestHeader("Authorization") String token,@PathVariable("question_id")int question_id){
+        return service.deleteQuestion(question_id,token.substring(7));
+    }
+
     
 
     @GetMapping("/myquestions")
@@ -65,6 +70,7 @@ public class UserController {
     public ResponseEntity<?> addanswer(@RequestBody Answer answer,@RequestHeader("Authorization") String token,@PathVariable("question_id") int question_id) {
         return service.addAnswer( question_id,answer,token.substring(7));
     }
+    
     
    @PostMapping("/updateanswer/{question_id}")
    public ResponseEntity<?> updateanswer(@RequestBody Answer answer,@RequestHeader("Authorization") String token,@PathVariable("question_id") int question_id) {
