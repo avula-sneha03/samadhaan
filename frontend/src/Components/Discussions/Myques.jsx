@@ -203,7 +203,7 @@ const Myques = () => {
                             Update
                         </button>
                         <button
-                            onClick={() => setIsUpdateModalOpen(false)}
+                            onClick={() => {setIsUpdateModalOpen(false);setNewQuestion("")}}
                             style={{ padding: "8px", marginLeft: "10px", background: "gray", color: "white", border: "none", cursor: "pointer" }}
                         >
                             Cancel

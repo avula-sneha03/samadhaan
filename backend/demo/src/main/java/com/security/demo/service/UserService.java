@@ -102,7 +102,7 @@ public class UserService {
         if (q == null) {
             return new ResponseEntity<>("Question not found", HttpStatus.NOT_FOUND);
         }
-    
+        
         // Add the answer to the question's list of answers
         List<Answer> answers = q.getAnswers();
         answers.add(answer);
@@ -115,6 +115,10 @@ public class UserService {
         User user = repo.findByUsername(username);
         if (user == null) {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+        if(user.getQuestions().contains(q)==true)
+        {
+            return new ResponseEntity<>("Hello you cant answer your own question",HttpStatus.CONFLICT);
         }
     
         // Add the answer to the user's list of answers
@@ -267,6 +271,7 @@ public ResponseEntity<?> deleteQuestion(int question_id, String token) {
 
     // Save the user to trigger cascading delete
     repo.save(user);
+    qrepo.delete(question);
 
     return new ResponseEntity<>("Question deleted successfully", HttpStatus.OK);
 }
