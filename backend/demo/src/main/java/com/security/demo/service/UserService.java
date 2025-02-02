@@ -110,7 +110,6 @@ public class UserService {
     
         // Extract the username from the token
         String username = jwtService.extractUserName(token);
-    
         // Find the user by username
         User user = repo.findByUsername(username);
         if (user == null) {
@@ -118,7 +117,7 @@ public class UserService {
         }
         if(user.getQuestions().contains(q)==true)
         {
-            return new ResponseEntity<>("Hello you cant answer your own question",HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Hello! you cant answer your own question",HttpStatus.CONFLICT);
         }
     
         // Add the answer to the user's list of answers
@@ -275,6 +274,13 @@ public ResponseEntity<?> deleteQuestion(int question_id, String token) {
 
     return new ResponseEntity<>("Question deleted successfully", HttpStatus.OK);
 }
+
+public ResponseEntity<?> myanswers(String substring) {
+    String username= jwtService.extractUserName(substring);
+    User user= repo.findByUsername(username);
+    return new ResponseEntity<>(user.getAnswers(),HttpStatus.OK);
+}
+
 
     
     

@@ -65,11 +65,17 @@ public class UserController {
     public ResponseEntity<?> getmyquestions(@RequestHeader("Authorization") String token) {
         return service.myquestions(token.substring(7));
     }
+    @GetMapping("/myanswers")
+    public ResponseEntity<?> getmyanswers(@RequestHeader("Authorization") String token) {
+        return service.myanswers(token.substring(7));
+    }
+    
 
     @PostMapping("/addanswer/{question_id}")
     public ResponseEntity<?> addanswer(@RequestBody Answer answer,@RequestHeader("Authorization") String token,@PathVariable("question_id") int question_id) {
         return service.addAnswer( question_id,answer,token.substring(7));
     }
+    
     
     
    @PostMapping("/updateanswer/{question_id}")

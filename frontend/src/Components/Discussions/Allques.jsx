@@ -2,22 +2,33 @@ import { useEffect, useState } from "react";
 import axios from "../../Config/axiosConfig";
 
 const Allques = () => {
-    const [allquestions, setallquestions] = useState([]);
+    const [allQuestions, setAllQuestions] = useState([]);
+    const [myQuestions, setMyQuestions] = useState([]); // State to store user's questions
     const [visibleAnswers, setVisibleAnswers] = useState(null); // Tracks which question's answers are visible
     const [isAnswerModalOpen, setIsAnswerModalOpen] = useState(false); // Controls modal visibility for adding answers
     const [newAnswer, setNewAnswer] = useState(""); // Stores the new answer input
     const [currentQuestionId, setCurrentQuestionId] = useState(null); // Stores the ID of the question being answered
 
     useEffect(() => {
-        fetchQuestions(); // Fetch questions on mount
+        fetchQuestions(); // Fetch all questions on mount
+        fetchMyQuestions(); // Fetch user's questions on mount
     }, []);
 
     const fetchQuestions = async () => {
         try {
             const response = await axios.get("/allquestions");
-            setallquestions(response.data); // Store data in state
+            setAllQuestions(response.data); // Store data in state
         } catch (error) {
             console.log("Error fetching data", error);
+        }
+    };
+
+    const fetchMyQuestions = async () => {
+        try {
+            const response = await axios.get("/myquestions");
+            setMyQuestions(response.data.map(q => q.id)); // Store only question IDs in state
+        } catch (error) {
+            console.log("Error fetching my questions", error);
         }
     };
 
@@ -38,8 +49,9 @@ const Allques = () => {
             setIsAnswerModalOpen(false); // Close the modal
             fetchQuestions(); // Refresh questions list
         } catch (error) {
-            if(error.status==409)
+            if (error.status === 409) {
                 alert(error.response.data);
+            }
         }
     };
 
@@ -51,18 +63,22 @@ const Allques = () => {
     return (
         <div>
             <h2>All Questions</h2>
-            {allquestions.length === 0 ? (
+            {allQuestions.length === 0 ? (
                 <p>Loading...</p>
             ) : (
-                allquestions.map((question) => (
+                allQuestions.map((question) => (
                     <div key={question.id} style={{ border: "1px solid black", padding: "10px", marginBottom: "10px" }}>
                         <p>{question.content}</p>
                         <button onClick={() => toggleAnswers(question.id)}>
                             {visibleAnswers === question.id ? "Hide Answers" : "Show Answers"}
                         </button>
-                        <button onClick={() => openAnswerModal(question.id)} style={{ marginLeft: "10px" }}>
-                            Add Answer
-                        </button>
+                        
+                        {/* Show Add Answer button only if the question ID is not in myQuestions */}
+                        {!myQuestions.includes(question.id) && (
+                            <button onClick={() => openAnswerModal(question.id)} style={{ marginLeft: "10px" }}>
+                                Add Answer
+                            </button>
+                        )}
 
                         {/* Show answers if this question's answers are visible */}
                         {visibleAnswers === question.id && (
@@ -99,14 +115,14 @@ const Allques = () => {
                 >
                     <div style={{ background: "#fff", padding: "20px", borderRadius: "8px", width: "300px" }}>
                         <h3>Add Answer</h3>
-                        <div style={{width:"100%"}}>
-                        <textarea
-                            value={newAnswer}
-                            onChange={(e) => handleAnswerChange(e.target.value)}
-                            rows="4"
-                            style={{width:"100%"}}
-                            placeholder="Type your answer..."
-                        />
+                        <div style={{ width: "100%" }}>
+                            <textarea
+                                value={newAnswer}
+                                onChange={(e) => handleAnswerChange(e.target.value)}
+                                rows="4"
+                                style={{ width: "100%" }}
+                                placeholder="Type your answer..."
+                            />
                         </div>
                         <br />
                         <button
