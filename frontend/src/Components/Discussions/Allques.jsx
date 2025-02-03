@@ -19,7 +19,7 @@ const Allques = () => {
             const response = await axios.get("/allquestions");
             setAllQuestions(response.data); // Store data in state
         } catch (error) {
-            console.log("Error fetching data", error);
+            console.log("Error in fetching data", error);
         }
     };
 
