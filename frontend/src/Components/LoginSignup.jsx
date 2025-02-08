@@ -81,7 +81,7 @@ const LoginSignup = () => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f4f4f4', margin: 0 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#180039', margin: 0 }}>
             <div style={{ background: 'white', padding: '20px', borderRadius: '5px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)', width: '300px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
                     <button onClick={toggleForm} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px', padding: '10px', fontWeight: isLogin ? 'bold' : 'normal', color: isLogin ? '#5cb85c' : 'black' }}>
