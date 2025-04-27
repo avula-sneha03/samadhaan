@@ -6,6 +6,7 @@ import ProtectedRoute from './ProtectedRoute'; // Import the ProtectedRoute comp
 import LogoutPage from '../Components/Logout';
 import ConnectDoc from '../Components/Connect/ConnectDoc';
 import Discussions from '../Components/Discussions/Discussions';
+import Dashboard from '../Components/Dashboard/Dashboard';
 
 const AppRouter = () => {
   return (
@@ -18,6 +19,7 @@ const AppRouter = () => {
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/logout" element={<LogoutPage />} />
           <Route path="/connectdoc" element={<ConnectDoc />} />
           <Route path="/discussions" element={<Discussions />} />
